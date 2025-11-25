@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart LeadMailer Lite™ – Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.1);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+      --border: rgba(148, 163, 184, 0.4);
+      --radius: 14px;
+      --shadow: 0 18px 35px rgba(15, 23, 42, 0.7);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 16px 40px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      background: linear-gradient(120deg, rgba(56,189,248,0.12), rgba(59,130,246,0.09));
+      border: 1px solid rgba(148,163,184,0.5);
+      box-shadow: var(--shadow);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    header h1 span.logo-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #e0f2fe, #38bdf8);
+      box-shadow: 0 0 18px rgba(56,189,248,0.8);
+    }
+    header p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    header .badge {
+      font-size: 0.75rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    header .badge span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.7);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.3fr);
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
+      border-radius: var(--radius);
+      padding: 14px 16px 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(56,189,248,0.12), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+    .card h2 {
+      margin: 0 0 4px;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card h2 span.pill {
+      font-size: 0.65rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .card p.sub {
+      margin: 0 0 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    @media (max-width: 700px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
+      font-size: 0.8rem;
+      outline: none;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+      max-height: 200px;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+    }
+    small.helper {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .btn-row {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 14px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: #0b1120;
+      box-shadow: 0 10px 18px rgba(37,99,235,0.5);
+    }
+    .btn-ghost {
+      background: rgba(15,23,42,0.8);
+      color: var(--muted);
+      border: 1px solid rgba(148,163,184,0.6);
+    }
+    .btn-small {
+      padding: 4px 10px;
+      font-size: 0.72rem;
+    }
+
+    .snapshot {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(15,23,42,0.96);
+      border: 1px dashed rgba(148,163,184,0.6);
+      font-size: 0.78rem;
+    }
+    .snapshot-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .snapshot p {
+      margin: 3px 0;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 900px) {
+      .metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 550px) {
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+    .metric {
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.6);
+      font-size: 0.78rem;
+    }
+    .metric-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .metric-value {
+      font-size: 1rem;
+      margin-top: 2px;
+    }
+
+    .table-wrap {
+      max-height: 260px;
+      overflow: auto;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.96);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+    thead {
+      position: sticky;
+      top: 0;
+      background: #020617;
+      z-index: 1;
+    }
+    th, td {
+      padding: 7px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(31,41,55,0.9);
+      white-space: nowrap;
+    }
+    th {
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    tbody tr {
+      cursor: pointer;
+    }
+    tbody tr:hover {
+      background: rgba(30,64,175,0.35);
+    }
+    .status-pill {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+    }
+    .status-New {
+      background: rgba(59,130,246,0.15);
+    }
+    .status-Generated {
+      background: rgba(234,179,8,0.15);
+    }
+    .status-Sent {
+      background: rgba(22,163,74,0.18);
+      border-color: rgba(34,197,94,0.8);
+      color: #bbf7d0;
+    }
+
+    .filter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 6px;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .filters {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .filter-chip {
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      cursor: pointer;
+      font-size: 0.7rem;
+    }
+    .filter-chip.active {
+      background: rgba(56,189,248,0.12);
+      border-color: var(--accent);
+      color: #e0f2fe;
+    }
+
+    .email-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .email-header small {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .email-meta {
+      font-size: 0.75rem;
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+    .email-meta span.label {
+      text-transform: uppercase;
+      font-size: 0.66rem;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(15,23,42,0.95);
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.7);
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #e0f2fe;
+      box-shadow: 0 10px 20px rgba(15,23,42,0.8);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 50;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <h1>
+          <span class="logo-dot"></span>
+          Smart LeadMailer Lite™
+        </h1>
+        <p>Demo Mode – AI-powered local outreach & email drafting (FirstBrick / Single-File SaaS™ style).</p>
+      </div>
+      <div class="badge">
+        <span class="dot"></span>
+        Live demo • Not connected to real email
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- LEFT COLUMN: Business + Dashboard -->
+      <div class="card">
+        <div class="card-inner">
+          <h2>
+            Business Setup
+            <span class="pill">Step 1</span>
+          </h2>
+          <p class="sub">Enter a sample business. The “AI” messaging below will auto-update in demo mode.</p>
+
+          <div class="grid-2">
+            <div>
+              <label>Business Name</label>
+              <input id="bizName" placeholder="Avicenna Integrative Medicine" />
+            </div>
+            <div>
+              <label>Website URL</label>
+              <input id="website" placeholder="https://avicennamedicine.com/" />
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top: 6px;">
+            <div>
+              <label>Niche / Industry</label>
+              <input id="niche" placeholder="Acupuncture & Integrative Health" />
+            </div>
+            <div>
+              <label>Target ZIP Code</label>
+              <input id="zip" placeholder="20878" />
+            </div>
+          </div>
+
+          <div style="margin-top: 6px;">
+            <label>Gmail Address (demo only)</label>
+            <input id="gmail" placeholder="yourname@gmail.com" />
+            <small class="helper">Used as the “from” identity in your story. This demo doesn’t send real emails.</small>
+          </div>
+
+          <div style="margin-top: 6px;">
+            <label>Short Business Description</label>
+            <textarea id="description" placeholder="We help busy professionals in Montgomery County relieve chronic pain and stress using acupuncture and holistic medicine."></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" id="btnMessaging">
+              ⚡ Generate Messaging (Demo)
+            </button>
+            <button class="btn-ghost btn-small" id="btnPrefill">
+              Use Sample Acupuncture Clinic
+            </button>
+          </div>
+
+          <div class="snapshot" id="snapshotBox">
+            <div class="snapshot-title">AI Messaging Snapshot (Demo)</div>
+            <p id="valueProp"><strong>Value Prop:</strong> Fill in your business above and click “Generate Messaging”.</p>
+            <p id="elevator"><strong>Elevator Pitch:</strong> This is where Smart LeadMailer Lite™ gives you a 2–3 sentence pitch.</p>
+            <p id="tone"><strong>Email Tone:</strong> –</p>
+          </div>
+
+          <hr style="border: none; border-top: 1px solid rgba(148,163,184,0.4); margin: 12px 0 8px;" />
+
+          <h2 style="margin-top: 2px;">
+            Activity Dashboard
+            <span class="pill">Step 4</span>
+          </h2>
+          <p class="sub">These metrics update as you "generate prospects" and "mark emails as sent" during the demo.</p>
+
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-label">Total Prospects</div>
+              <div class="metric-value" id="mTotal">0</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">New</div>
+              <div class="metric-value" id="mNew">0</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Email Generated</div>
+              <div class="metric-value" id="mGen">0</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Sent</div>
+              <div class="metric-value" id="mSent">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Prospects + Email Composer -->
+      <div class="card">
+        <div class="card-inner">
+          <h2>
+            Local Prospects & Emails
+            <span class="pill">Steps 2 & 3</span>
+          </h2>
+          <p class="sub">Generate fictional prospects by ZIP, click one, and watch the email auto-draft in demo mode.</p>
+
+          <!-- Prospects -->
+          <div class="filter-row">
+            <div>
+              <strong>Prospects</strong>
+              <span id="zipLabel" style="margin-left: 6px; color: var(--muted); font-size: 0.72rem;">ZIP: —</span>
+            </div>
+            <div class="filters">
+              <span class="filter-chip active" data-filter="All">All</span>
+              <span class="filter-chip" data-filter="New">New</span>
+              <span class="filter-chip" data-filter="Email Generated">Email Generated</span>
+              <span class="filter-chip" data-filter="Sent">Sent</span>
+            </div>
+          </div>
+          <div class="btn-row" style="margin-top: 0;">
+            <button class="btn-primary" id="btnProspects">📍 Generate Prospects (Demo)</button>
+            <button class="btn-ghost btn-small" id="btnClearProspects">Clear List</button>
+          </div>
+
+          <div class="table-wrap" style="margin-top: 8px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Company</th>
+                  <th>Email</th>
+                  <th>City</th>
+                  <th>ZIP</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="prospectTable">
+                <!-- Rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Email Composer -->
+          <div style="margin-top: 10px;">
+            <div class="email-header">
+              <div>
+                <strong>Email Composer</strong>
+                <small id="selectedLabel">Select a prospect to draft an email.</small>
+              </div>
+              <small>Demo only – logs activity in this browser.</small>
+            </div>
+
+            <div class="email-meta">
+              <div><span class="label">To:</span> <span id="toLine">—</span></div>
+              <div><span class="label">From (Gmail):</span> <span id="fromLine">—</span></div>
+            </div>
+
+            <div style="margin-bottom: 4px;">
+              <label>Subject</label>
+              <input id="emailSubject" placeholder="Subject will appear here after generation." />
+            </div>
+            <div>
+              <label>Body</label>
+              <textarea id="emailBody" placeholder="Click 'Generate Email (Demo)' after selecting a prospect."></textarea>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn-primary" id="btnGenerateEmail">
+                ✨ Generate Email (Demo)
+              </button>
+              <button class="btn-ghost btn-small" id="btnMarkSent">
+                ✅ Mark as Sent
+              </button>
+            </div>
+
+            <small class="helper">
+              Smart LeadMailer Lite™ demo: in a full build, this would connect to real email infrastructure. Here, it just
+              updates the dashboard so you can tell the story in-person.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span>✅ Activity updated in demo.</span>
+  </div>
+
+  <script>
+    // --- Simple in-browser demo state ---
+    const prospects = [];
+    let filterStatus = "All";
+    let selectedProspectId = null;
+
+    const el = (id) => document.getElementById(id);
+
+    function showToast(msg) {
+      const t = el("toast");
+      t.querySelector("span").textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 1800);
+    }
+
+    function prefillSample() {
+      el("bizName").value = "Avicenna Integrative Medicine";
+      el("website").value = "https://avicennamedicine.com/";
+      el("niche").value = "Acupuncture & Integrative Health";
+      el("zip").value = "20878";
+      el("gmail").value = "info@avicennamedicine.com";
+      el("description").value =
+        "We help busy professionals in Montgomery County relieve chronic pain, stress, and fatigue using acupuncture, integrative medicine, and personalized wellness plans.";
+      generateMessaging();
+    }
+
+    function generateMessaging() {
+      const name = el("bizName").value || "Your Business";
+      const niche = el("niche").value || "your niche";
+      const zip = el("zip").value || "your area";
+
+      const valueProp =
+        `${name} helps people in ZIP ${zip} get faster, more personalized results with modern ${niche.toLowerCase()}—without feeling like just another number.`;
+
+      const elevator =
+        `We combine real human care with smart automation to keep your pipeline warm. Smart LeadMailer Lite™ scans your offer, creates local prospect lists, and drafts conversation-starting emails so you stay in front of the right people every week.`;
+
+      const tone = "Warm, professional, and conversational with clear next steps.";
+
+      el("valueProp").innerHTML = "<strong>Value Prop:</strong> " + valueProp;
+      el("elevator").innerHTML = "<strong>Elevator Pitch:</strong> " + elevator;
+      el("tone").innerHTML = "<strong>Email Tone:</strong> " + tone;
+
+      el("zipLabel").textContent = "ZIP: " + (zip || "—");
+
+      showToast("Demo messaging generated.");
+    }
+
+    function randomFrom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateProspects() {
+      prospects.length = 0;
+      selectedProspectId = null;
+      renderSelected(null);
+
+      const niche = el("niche").value || "Local Service";
+      const zip = el("zip").value || "20878";
+
+      const firstNames = ["Alex", "Jordan", "Taylor", "Morgan", "Sam", "Casey", "Riley", "Drew", "Jamie", "Chris"];
+      const lastNames = ["Carter", "Diaz", "Patel", "Nguyen", "Lopez", "Green", "Khan", "Bennett", "Reed", "Fischer"];
+      const cities = ["Gaithersburg", "Rockville", "Germantown", "Bethesda", "Silver Spring"];
+      const companyFormats = [
+        `${niche} Center`,
+        `${niche} Studio`,
+        `${niche} Clinic`,
+        `${niche} Group`,
+        `${niche} Partners`
+      ];
+
+      for (let i = 0; i < 12; i++) {
+        const first = randomFrom(firstNames);
+        const last = randomFrom(lastNames);
+        const name = `${first} ${last}`;
+        const domainBase = niche.split(" ")[0].toLowerCase().replace(/[^a-z0-9]/g, "") || "local";
+        const email = `${first.toLowerCase()}.${last.toLowerCase()}@${domainBase}${i + 1}.com`;
+
+        prospects.push({
+          id: "p" + i,
+          name,
+          company: `${randomFrom(companyFormats)} ${i + 1}`,
+          email,
+          city: randomFrom(cities),
+          state: "MD",
+          zip,
+          status: "New",
+          lastEmailSubject: "",
+          lastEmailBody: ""
+        });
+      }
+
+      renderProspects();
+      updateMetrics();
+      showToast("Demo prospects generated.");
+    }
+
+    function clearProspects() {
+      prospects.length = 0;
+      selectedProspectId = null;
+      renderProspects();
+      renderSelected(null);
+      updateMetrics();
+      showToast("Prospect list cleared.");
+    }
+
+    function renderProspects() {
+      const tbody = el("prospectTable");
+      tbody.innerHTML = "";
+
+      const filtered = prospects.filter((p) => {
+        if (filterStatus === "All") return true;
+        if (filterStatus === "Email Generated") return p.status === "Email Generated";
+        return p.status === filterStatus;
+      });
+
+      filtered.forEach((p) => {
+        const tr = document.createElement("tr");
+        tr.dataset.id = p.id;
+
+        tr.innerHTML = `
+          <td>${p.name}</td>
+          <td>${p.company}</td>
+          <td>${p.email}</td>
+          <td>${p.city}</td>
+          <td>${p.zip}</td>
+          <td><span class="status-pill status-${p.status.replace(" ", "")}">${p.status}</span></td>
+        `;
+
+        tr.addEventListener("click", () => {
+          selectedProspectId = p.id;
+          renderSelected(p);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderSelected(p) {
+      if (!p) {
+        el("selectedLabel").textContent = "Select a prospect to draft an email.";
+        el("toLine").textContent = "—";
+        el("emailSubject").value = "";
+        el("emailBody").value = "";
+        return;
+      }
+
+      el("selectedLabel").textContent = `Drafting email to ${p.name} at ${p.company}`;
+      el("toLine").textContent = `${p.name} <${p.email}>`;
+
+      const gmail = el("gmail").value || "youremail@gmail.com";
+      el("fromLine").textContent = gmail;
+    }
+
+    function generateEmail() {
+      if (!selectedProspectId) {
+        showToast("Select a prospect first.");
+        return;
+      }
+      const p = prospects.find((x) => x.id === selectedProspectId);
+      if (!p) return;
+
+      const bizName = el("bizName").value || "Our Practice";
+      const website = el("website").value || "yourwebsite.com";
+      const valuePropText = el("valueProp").textContent.replace("Value Prop:", "").trim();
+
+      const subject = `Quick idea for ${p.company} in ${p.city}`;
+      const body = [
+        `Hi ${p.name.split(" ")[0]},`,
+        ``,
+        `I’m reaching out from ${bizName}. We work with organizations in ZIP ${p.zip} who want better results from their ${el("niche").value || "local outreach"} without adding more to their plate.`,
+        ``,
+        valuePropText || "We help local teams get more booked appointments from the leads they already have.",
+        ``,
+        `If you’re open to it, I’d love to show you a 5-minute demo of how Smart LeadMailer Lite™ can warm up your local list and keep your brand in front of nearby decision-makers.`,
+        ``,
+        `You can reply to this email or visit ${website} to grab a time that works for you.`,
+        ``,
+        `Best,`,
+        `— ${bizName}`
+      ].join("\n");
+
+      el("emailSubject").value = subject;
+      el("emailBody").value = body;
+
+      p.status = "Email Generated";
+      p.lastEmailSubject = subject;
+      p.lastEmailBody = body;
+      updateMetrics();
+      renderProspects();
+      showToast("Demo email generated.");
+    }
+
+    function markSent() {
+      if (!selectedProspectId) {
+        showToast("Select a prospect first.");
+        return;
+      }
+      const p = prospects.find((x) => x.id === selectedProspectId);
+      if (!p) return;
+
+      if (!el("emailSubject").value || !el("emailBody").value) {
+        showToast("Generate an email before marking as sent.");
+        return;
+      }
+
+      p.status = "Sent";
+      p.lastEmailSubject = el("emailSubject").value;
+      p.lastEmailBody = el("emailBody").value;
+      updateMetrics();
+      renderProspects();
+      showToast("Marked as sent (demo).");
+    }
+
+    function updateMetrics() {
+      const total = prospects.length;
+      const newCount = prospects.filter((p) => p.status === "New").length;
+      const genCount = prospects.filter((p) => p.status === "Email Generated").length;
+      const sentCount = prospects.filter((p) => p.status === "Sent").length;
+
+      el("mTotal").textContent = total;
+      el("mNew").textContent = newCount;
+      el("mGen").textContent = genCount;
+      el("mSent").textContent = sentCount;
+    }
+
+    // Event wiring
+    el("btnPrefill").addEventListener("click", prefillSample);
+    el("btnMessaging").addEventListener("click", generateMessaging);
+    el("btnProspects").addEventListener("click", generateProspects);
+    el("btnClearProspects").addEventListener("click", clearProspects);
+    el("btnGenerateEmail").addEventListener("click", generateEmail);
+    el("btnMarkSent").addEventListener("click", markSent);
+
+    document.querySelectorAll(".filter-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".filter-chip").forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        filterStatus = chip.dataset.filter;
+        renderProspects();
+      });
+    });
+
+    // Optional: pre-fill something on load so you can demo instantly if time is tight
+    prefillSample();
+  </script>
+</body>
+</html>
